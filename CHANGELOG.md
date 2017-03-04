@@ -7,4 +7,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Initial release
 
 - 0.0.2
-Add JSX React code support.
+
+- 0.0.3
+Fix the bug that the function can not work in new version of VSC.
+Add feature to allow user to disable it in .updaterc.

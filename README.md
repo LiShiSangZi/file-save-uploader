@@ -19,10 +19,18 @@ To use this, please follow the step:
 }
 ```
 *IMPORTANT* I did not create folders if the remote folder does not exist. You will see an error if the file failed to SCP.
+3. If you want to disable the uploader function. You can either disable the plugin for the workspace. Or you can set this in .updaterc:
+```
+{
+  "disabled": true,
+  "root": "/opt/my_remote_root_folder",
+  "url": "root@10.0.10.121"
+}
+```
 
 
 
 ## Requirements
 
 1. You should have a remote machine.
-2. Your machine should accept SCP command.
+2. Your machine should accept SCP command. (So I don't think Windows can use it...)

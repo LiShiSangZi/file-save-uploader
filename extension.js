@@ -22,6 +22,9 @@ try {
 
 
 function onDocSave(event) {
+  if (!config.url || !config.root || config.disabled === true) {
+    return;
+  }
   const fileName = event.fileName;
   const root = workspace.rootPath;
   let relative = path.relative(root, fileName);
