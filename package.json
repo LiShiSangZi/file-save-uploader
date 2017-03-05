@@ -2,10 +2,11 @@
   "name": "file-save-uploader",
   "displayName": "file-save-uploader",
   "description": "SCP a file to the remote server once the file is saved.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "gogocrow",
   "engines": {
-    "vscode": "^1.6.0"
+    "vscode": "^1.6.0",
+    "node": ">=6.0.0"
   },
   "categories": [
     "Other"
@@ -15,6 +16,10 @@
   ],
   "main": "./extension",
   "contributes": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LiShiSangZi/file-save-uploader"
+  },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "node ./node_modules/vscode/bin/test"

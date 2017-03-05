@@ -11,3 +11,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - 0.0.3
 Fix the bug that the function can not work in new version of VSC.
 Add feature to allow user to disable it in .updaterc.
+
+- 0.0.4
+Add NodeJS 6.0 as a required enviroment.

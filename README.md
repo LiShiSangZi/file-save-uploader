@@ -32,5 +32,6 @@ To use this, please follow the step:
 
 ## Requirements
 
-1. You should have a remote machine.
-2. Your machine should accept SCP command. (So I don't think Windows can use it...)
+1. Node 6.0 or above is required. Because I used some ES6 syntax.
+2. You should have a remote machine.
+3. Your machine should accept SCP command. (So I don't think Windows can use it...)
