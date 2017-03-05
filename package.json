@@ -2,8 +2,9 @@
   "name": "file-save-uploader",
   "displayName": "file-save-uploader",
   "description": "SCP a file to the remote server once the file is saved.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "gogocrow",
+  "icon": "logo.png",
   "engines": {
     "vscode": "^1.6.0",
     "node": ">=6.0.0"
