@@ -28,6 +28,19 @@ To use this, please follow the step:
 }
 ```
 
+You also can upload the whole workspace for the init purpose.
+You can press F1 in your workspace and select "Upload Whole Workspace" command to upload the workspace.
+You can update your .uploadrc like this:
+```
+{
+  "disabled": true,
+  "root": "/opt/my_remote_root_folder",
+  "url": "root@10.0.10.121",
+  "ignores": ["node_modules", ".git"]
+}
+```
+so that those folders can be ignored.
+
 
 
 ## Requirements

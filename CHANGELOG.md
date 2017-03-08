@@ -14,3 +14,7 @@ Add feature to allow user to disable it in .updaterc.
 
 - 0.0.4
 Add NodeJS 6.0 as a required enviroment.
+
+- 0.0.6
+Add Message when user update .uploadrc file.
+Support upload the whole workspace.
