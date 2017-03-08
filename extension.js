@@ -8,7 +8,6 @@ const {
   workspace,
   window
 } = vscode;
-
 let config = {};
 let configLoaded = false;
 try {
@@ -20,12 +19,15 @@ try {
   console.log(e);
 }
 
-
 function onDocSave(event) {
-  if (!config.url || !config.root || config.disabled === true) {
+  const fileName = event.fileName;
+  if (fileName === path.join(workspace.rootPath, '.uploadrc')) {
+    window.showInformationMessage('You just updated your .uploadrc file. Please reload your workspace to take effect!');
     return;
   }
-  const fileName = event.fileName;
+  if (!configLoaded || !config.url || !config.root || config.disabled === true) {
+    return;
+  }
   const root = workspace.rootPath;
   let relative = path.relative(root, fileName);
   let output = spawn('scp', [`${relative}`, `${config.url}:${config.root}/${relative}`], {
@@ -41,11 +43,46 @@ function onDocSave(event) {
   });
 }
 
+function uploadWorkspace() {
+  if (configLoaded) {
+    const root = workspace.rootPath;
+    const output = spawn('scp', ['-r', `./`, `${config.url}:${config.root}`], {
+      cwd: root,
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    // window.setStatusBarMessage('Uploading files');
+    // window.createOutputChannel('Uploading...');
+    window.showInformationMessage('Uploading files...');
+    const errorLogs = [];
+    process.stderr.on('data', (data) => {
+      // window.showErrorMessage(data.toString());
+      // console.log(data.toString());
+      errorLogs.push(data.toString);
+    });
+    // process.stdout.on('data', (data) => {
+    //   console.log(data.toString());
+    // });
+
+    output.on('close', (code) => {
+      // window.showInformationMessage(`close ${code}`);
+      console.log(errorLogs);
+      if (code === 0) {
+        window.showInformationMessage('The workspace upload is completed!');
+      } else {
+        window.showErrorMessage(errorLogs.join('\n'));
+      }
+    });
+  } else {
+    window.showWarningMessage('Your .uploadrc is not specific or the function is disabled. Please update the .uploadrc and reload the workspace!');
+  }
+}
+
 function activate(context) {
 
-  if (configLoaded) {
-    workspace.onDidSaveTextDocument(onDocSave);
-  }
+  let sub = context.subscriptions;
+  sub.push(vscode.commands.registerCommand('gogocrow.uploadAll', uploadWorkspace));
+
+  workspace.onDidSaveTextDocument(onDocSave);
 }
 exports.activate = activate;
 

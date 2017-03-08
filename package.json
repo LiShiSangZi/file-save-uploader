@@ -16,7 +16,12 @@
     "*"
   ],
   "main": "./extension",
-  "contributes": {},
+  "contributes": {
+    "commands": [{
+      "command": "gogocrow.uploadAll",
+      "title": "Upload Whole Workspace"
+    }]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/LiShiSangZi/file-save-uploader"
