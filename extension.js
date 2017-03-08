@@ -8,6 +8,7 @@ const {
   workspace,
   window
 } = vscode;
+
 let config = {};
 let configLoaded = false;
 try {
@@ -15,7 +16,9 @@ try {
   if (config.root && config.url) {
     configLoaded = true;
   }
+  config.ignores = config.ignores || [];
 } catch (e) {
+  config.ignores = [];
   console.log(e);
 }
 
@@ -46,16 +49,18 @@ function onDocSave(event) {
 function uploadWorkspace() {
   if (configLoaded) {
     const root = workspace.rootPath;
-    const output = spawn('scp', ['-r', `./`, `${config.url}:${config.root}`], {
-      cwd: root,
-      stdio: ['pipe', 'pipe', 'pipe']
+    const params = ['-a'];
+    config.ignores.forEach(ignore => {
+      params.push(`--exclude=${ignore}`);
     });
-    // window.setStatusBarMessage('Uploading files');
-    // window.createOutputChannel('Uploading...');
-    window.showInformationMessage('Uploading files...');
+    params.push(`./`, `${config.url}:${config.root}`);
+    const output = spawn('rsync', params, {
+      cwd: root
+    });
+    
+    window.setStatusBarMessage('Uploading files...');
     const errorLogs = [];
     process.stderr.on('data', (data) => {
-      // window.showErrorMessage(data.toString());
       // console.log(data.toString());
       errorLogs.push(data.toString);
     });
@@ -64,10 +69,9 @@ function uploadWorkspace() {
     // });
 
     output.on('close', (code) => {
-      // window.showInformationMessage(`close ${code}`);
-      console.log(errorLogs);
       if (code === 0) {
         window.showInformationMessage('The workspace upload is completed!');
+        window.setStatusBarMessage('');
       } else {
         window.showErrorMessage(errorLogs.join('\n'));
       }
