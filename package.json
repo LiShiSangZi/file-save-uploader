@@ -17,10 +17,21 @@
   ],
   "main": "./extension",
   "contributes": {
-    "commands": [{
-      "command": "gogocrow.uploadAll",
-      "title": "Upload Whole Workspace"
-    }]
+    "commands": [
+      {
+        "command": "gogocrow.uploadAll",
+        "title": "Upload Whole Workspace"
+      }
+    ],
+    "keybindings": [
+      {
+        "mac": "cmd+alt+u",
+        "win": "ctrl+alt+u",
+        "linux": "ctrl+alt+u",
+        "key": "ctrl+alt+u",
+        "command": "gogocrow.uploadAll"
+      }
+    ]
   },
   "repository": {
     "type": "git",
@@ -31,11 +42,14 @@
     "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^2.0.3",
-    "vscode": "^1.0.0",
-    "mocha": "^2.3.3",
-    "eslint": "^3.6.0",
+    "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.40",
-    "@types/mocha": "^2.2.32"
+    "eslint": "^3.6.0",
+    "mocha": "^2.3.3",
+    "typescript": "^2.0.3",
+    "vscode": "^1.0.0"
+  },
+  "dependencies": {
+    "rsync": "^0.6.1"
   }
 }

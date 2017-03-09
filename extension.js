@@ -4,6 +4,8 @@ const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
 const spawn = require('child_process').spawn;
+const Rsync = require('rsync');
+
 const {
   workspace,
   window
@@ -48,34 +50,34 @@ function onDocSave(event) {
 
 function uploadWorkspace() {
   if (configLoaded) {
-    const root = workspace.rootPath;
-    const params = ['-a'];
-    config.ignores.forEach(ignore => {
-      params.push(`--exclude=${ignore}`);
-    });
-    params.push(`./`, `${config.url}:${config.root}`);
-    const output = spawn('rsync', params, {
-      cwd: root
-    });
-    
-    window.setStatusBarMessage('Uploading files...');
-    const errorLogs = [];
-    process.stderr.on('data', (data) => {
-      // console.log(data.toString());
-      errorLogs.push(data.toString);
-    });
-    // process.stdout.on('data', (data) => {
-    //   console.log(data.toString());
-    // });
+    try {
+      const root = workspace.rootPath;
+      const params = ['-a'];
 
-    output.on('close', (code) => {
-      if (code === 0) {
-        window.showInformationMessage('The workspace upload is completed!');
-        window.setStatusBarMessage('');
-      } else {
-        window.showErrorMessage(errorLogs.join('\n'));
-      }
-    });
+      const cmd = new Rsync().flags('a')
+        .shell('ssh').source(root).destination(`${config.url}:${config.root}`);
+
+      config.ignores.forEach(ignore => {
+        // params.push(`--exclude=${ignore}`);
+        cmd.exclude(ignore);
+      });
+      const proc = cmd.execute();
+      proc.stderr.on('data', (data) => {
+        window.showErrorMessage(data.toString());
+      });
+
+      proc.on('close', code => {
+        if (code === 0) {
+          window.showInformationMessage('The workspace upload is completed!');
+          window.setStatusBarMessage('');
+        } else {
+          window.setStatusBarMessage('Last upload is failed!');
+        }
+      });
+      window.setStatusBarMessage('Uploading files...');
+    } catch (e) {
+      console.log(e);
+    }
   } else {
     window.showWarningMessage('Your .uploadrc is not specific or the function is disabled. Please update the .uploadrc and reload the workspace!');
   }
