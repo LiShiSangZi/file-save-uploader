@@ -29,7 +29,10 @@ To use this, please follow the step:
 ```
 
 You also can upload the whole workspace for the init purpose.
-You can press F1 in your workspace and select "Upload Whole Workspace" command to upload the workspace.
+But please remember to have rsync installed before you go.
+
+1. You can press F1 in your workspace and select "Upload Whole Workspace" command to upload the workspace.
+2. You can press (CMD+ALT+U in Mac and Ctrl+Alt+U in Linux) to upload the workspace.
 You can update your .uploadrc like this:
 ```
 {

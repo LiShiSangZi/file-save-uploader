@@ -18,3 +18,6 @@ Add NodeJS 6.0 as a required enviroment.
 - 0.0.6
 Add Message when user update .uploadrc file.
 Support upload the whole workspace.
+
+- 0.0.7
+Use rsync for the workspace upload.
