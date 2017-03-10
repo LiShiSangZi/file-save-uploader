@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const spawn = require('child_process').spawn;
 const Rsync = require('rsync');
+const co = require('co');
 
 const {
   workspace,
@@ -48,33 +49,51 @@ function onDocSave(event) {
   });
 }
 
+function* sync(path, target) {
+  console.log(`${path}, ${target}`);
+  return new Promise((resolve, reject) => {
+
+    const cmd = new Rsync().flags('a')
+      .shell('ssh').source(path).destination(target);
+
+    config.ignores.forEach(ignore => {
+      // params.push(`--exclude=${ignore}`);
+      cmd.exclude(ignore);
+    });
+
+    const proc = cmd.execute();
+    proc.stderr.on('data', (data) => {
+      window.showErrorMessage(data.toString());
+    });
+
+    proc.on('close', code => {
+      if (code === 0) {
+        resolve(code);
+      } else {
+        reject(code);
+      }
+    });
+  });
+}
+
 function uploadWorkspace() {
   if (configLoaded) {
     try {
       const root = workspace.rootPath;
       const params = ['-a'];
 
-      const cmd = new Rsync().flags('a')
-        .shell('ssh').source(root).destination(`${config.url}:${config.root}`);
-
-      config.ignores.forEach(ignore => {
-        // params.push(`--exclude=${ignore}`);
-        cmd.exclude(ignore);
-      });
-      const proc = cmd.execute();
-      proc.stderr.on('data', (data) => {
-        window.showErrorMessage(data.toString());
-      });
-
-      proc.on('close', code => {
-        if (code === 0) {
-          window.showInformationMessage('The workspace upload is completed!');
-          window.setStatusBarMessage('');
-        } else {
-          window.setStatusBarMessage('Last upload is failed!');
-        }
-      });
+      const files = fs.readdirSync(root);
       window.setStatusBarMessage('Uploading files...');
+      co(function*() {
+        for (let i = 0; i < files.length; i++) {
+          yield sync(path.join(root, files[i]), `${config.url}:${config.root}`);
+        }
+      }).catch(e => {
+        window.setStatusBarMessage('Last upload is failed!');
+      });
+
+      window.showInformationMessage('The workspace upload is completed!');
+      window.setStatusBarMessage('');
     } catch (e) {
       console.log(e);
     }

@@ -21,3 +21,6 @@ Support upload the whole workspace.
 
 - 0.0.7
 Use rsync for the workspace upload.
+
+- 0.0.8
+Fix a rsync bug.
