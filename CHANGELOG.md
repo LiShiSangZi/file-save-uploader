@@ -24,3 +24,6 @@ Use rsync for the workspace upload.
 
 - 0.0.8
 Fix a rsync bug.
+
+- 0.0.9
+If upload a single file, add a timeout warning for 5 seconds.

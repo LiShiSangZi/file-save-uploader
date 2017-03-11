@@ -1,8 +1,8 @@
 {
   "name": "file-save-uploader",
   "displayName": "file-save-uploader",
-  "description": "SCP a file to the remote server once the file is saved.",
-  "version": "0.0.8",
+  "description": "Upload a file to the remote server once the file is saved.",
+  "version": "0.0.9",
   "publisher": "gogocrow",
   "icon": "logo.png",
   "engines": {

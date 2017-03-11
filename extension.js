@@ -22,7 +22,27 @@ try {
   config.ignores = config.ignores || [];
 } catch (e) {
   config.ignores = [];
-  console.log(e);
+}
+
+function* singleUpload(file, target) {
+  return new Promise((resolve, reject) => {
+    const output = spawn('scp', [file, target]);
+    output.on('close', (code) => {
+      if (code === 0) {
+        resolve('The file upload is completed!');
+      } else {
+        window.showErrorMessage('The upload is failed. Please make sure you have proper access of the server. You need to add your SSH key to your remote server.');
+        reject(`Upload file ${fileName.replace(/^(.*)\//, '')} failed!`);
+      }
+    });
+    setTimeout(() => {
+      window.showErrorMessage('The upload timeout. Please make sure you can connect to your server and have proper access of the server. You need to add your SSH key to your server.');
+      reject('Upload timeout.');
+    }, 5000);
+    output.stderr.on('data', (data) => {
+      window.showErrorMessage(data.toString());
+    });
+  });
 }
 
 function onDocSave(event) {
@@ -36,21 +56,16 @@ function onDocSave(event) {
   }
   const root = workspace.rootPath;
   let relative = path.relative(root, fileName);
-  let output = spawn('scp', [`${relative}`, `${config.url}:${config.root}/${relative}`], {
-    cwd: root
-  });
-  output.on('close', (code) => {
-    if (code === 0) {
-      window.showInformationMessage('The file upload is completed!');
-    }
-  });
-  output.stderr.on('data', (data) => {
-    window.showErrorMessage(data.toString());
-  });
+  co(function*() {
+    window.setStatusBarMessage('Uploading...');
+    const result = yield singleUpload(fileName, `${config.url}:${config.root}/${relative}`);
+    window.showInformationMessage(result);
+  }).catch(e => {
+    window.setStatusBarMessage(e);
+  })
 }
 
 function* sync(path, target) {
-  console.log(`${path}, ${target}`);
   return new Promise((resolve, reject) => {
 
     const cmd = new Rsync().flags('a')
@@ -94,9 +109,7 @@ function uploadWorkspace() {
 
       window.showInformationMessage('The workspace upload is completed!');
       window.setStatusBarMessage('');
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e) {}
   } else {
     window.showWarningMessage('Your .uploadrc is not specific or the function is disabled. Please update the .uploadrc and reload the workspace!');
   }

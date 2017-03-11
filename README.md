@@ -5,9 +5,10 @@ I write this to upload my file to my VM once it is saved...
 ## Features
 
 This is how I used this.
-First, I add my public key in my VM. Then I will run a SCP command to upload my local file to the remote file.
+First, I add my public key in my VM. Then install rsync and scp if necessary.
+Then you can can press (CMD+ALT+U in Mac and Ctrl+Alt+U in Linux) to upload the workspace.
 Once it is done, any newly saved file will be uploaded.
-I just did it for fun.
+So now I can remote debug and edit the code in my remote VM server.
 
 To use this, please follow the step:
 1. create file .uploadrc under the root path in your workspace.
