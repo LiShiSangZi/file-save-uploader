@@ -2,7 +2,7 @@
   "name": "file-save-uploader",
   "displayName": "file-save-uploader",
   "description": "Upload a file to the remote server once the file is saved.",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "publisher": "gogocrow",
   "icon": "logo.png",
   "engines": {

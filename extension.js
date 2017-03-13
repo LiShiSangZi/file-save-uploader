@@ -27,7 +27,12 @@ try {
 function* singleUpload(file, target) {
   return new Promise((resolve, reject) => {
     const output = spawn('scp', [file, target]);
+    loaded = false;
     output.on('close', (code) => {
+      if (loaded) {
+        return;
+      }
+      loaded = true;
       if (code === 0) {
         resolve('The file upload is completed!');
       } else {
@@ -36,6 +41,10 @@ function* singleUpload(file, target) {
       }
     });
     setTimeout(() => {
+      if (loaded) {
+        return;
+      }
+      loaded = true;
       window.showErrorMessage('The upload timeout. Please make sure you can connect to your server and have proper access of the server. You need to add your SSH key to your server.');
       reject('Upload timeout.');
     }, 5000);
@@ -60,6 +69,7 @@ function onDocSave(event) {
     window.setStatusBarMessage('Uploading...');
     const result = yield singleUpload(fileName, `${config.url}:${config.root}/${relative}`);
     window.showInformationMessage(result);
+    window.setStatusBarMessage('Uploaded!');
   }).catch(e => {
     window.setStatusBarMessage(e);
   })
