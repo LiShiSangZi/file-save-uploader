@@ -26,8 +26,12 @@ try {
 
 function* singleUpload(file, target) {
   return new Promise((resolve, reject) => {
-    const output = spawn('scp', [file, target]);
-    loaded = false;
+    const args = [file, target];
+    if (config.port) {
+      args.unshift([`-P ${config.port}`])
+    }
+    const output = spawn('scp', args);
+    let loaded = false;
     output.on('close', (code) => {
       if (loaded) {
         return;
