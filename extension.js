@@ -65,7 +65,7 @@ function onDocSave(event) {
   }
   const root = workspace.rootPath;
   let relative = path.relative(root, fileName);
-  co(function*() {
+  co(function* () {
     window.setStatusBarMessage('Uploading...');
     const result = yield singleUpload(fileName, `${config.url}:${config.root}/${relative}`);
     window.showInformationMessage(result);
@@ -86,6 +86,10 @@ function* sync(path, target) {
       cmd.exclude(ignore);
     });
 
+    if (config.port) {
+      cmd.set('port', config.port);
+    }
+    
     const proc = cmd.execute();
     proc.stderr.on('data', (data) => {
       window.showErrorMessage(data.toString());
@@ -109,7 +113,7 @@ function uploadWorkspace() {
 
       const files = fs.readdirSync(root);
       window.setStatusBarMessage('Uploading files...');
-      co(function*() {
+      co(function* () {
         for (let i = 0; i < files.length; i++) {
           yield sync(path.join(root, files[i]), `${config.url}:${config.root}`);
         }

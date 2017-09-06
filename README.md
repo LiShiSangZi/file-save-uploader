@@ -40,7 +40,8 @@ You can update your .uploadrc like this:
   "disabled": true,
   "root": "/opt/my_remote_root_folder",
   "url": "root@10.0.10.121",
-  "ignores": ["node_modules", ".git"]
+  "ignores": ["node_modules", ".git"],
+  "port": "2222"
 }
 ```
 so that those folders can be ignored.
